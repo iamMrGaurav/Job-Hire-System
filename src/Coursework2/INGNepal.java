@@ -342,6 +342,7 @@ public class INGNepal implements ActionListener {
     public static void main(String[] args) {
         new INGNepal().layout();
         System.out.println("hi");
+
     }
 
 }

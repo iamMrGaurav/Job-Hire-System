@@ -1,5 +1,6 @@
 package Coursework2;
-
+/**
+ * Coder : Gaurav Paudel*/
 public class FullTimeStaffHire extends StaffHire{
     private int salary; //declaring instance variable
     private int workingHour;
