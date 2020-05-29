@@ -404,9 +404,83 @@ public class INGNepal implements ActionListener {
                 JOptionPane.showMessageDialog(frame, "Please enter vacancy number, salary and working hour in number format.");
             }
         }else if(en.getSource() == Appoint){
+            if (checkBoxFulTime.isSelected()){
+                if (!VaccancyNumberf.getText().equals("")){
+                    for(StaffHire staffHire : staffHires){
+                        if (getVacancyNumber() == staffHire.getVacancyNumber()){
+                            if(staffHires.get(getVacancyNumber()) instanceof FullTimeStaffHire){
+                                if(!((FullTimeStaffHire) staffHire).getJoined()){
+                                    if(!getStaffName().equals("") && !getAppointedBy().equals("") && !getQualification().equals("") && !getJoiningDate().equals("")){
+                                        FullTimeStaffHire fullTimeStaffHire = (FullTimeStaffHire) staffHire;
+                                        fullTimeStaffHire.HireFullTimeStaff(getStaffName(), getJoiningDate(), getQualification(), getAppointedBy());
+                                        System.out.println("Appointed successfully");
+                                    }
+                                }
+                            }else{
+                                JOptionPane.showMessageDialog(frame, "This vacancy is not of fulltime please enter another");
+                            }
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(frame, "No vacancy available");
+                        }
+                    }
+                }
+            }else if(checkBoxPartTime.isSelected()){
+                if (!VaccancyNumberf.getText().equals("")){
+                    for(StaffHire staffHire : staffHires){
+                        if (getVacancyNumber() == staffHire.getVacancyNumber()){
+                            if(staffHires.get(getVacancyNumber()) instanceof PartTimeStaffHire){
+                                if(!((PartTimeStaffHire) staffHire).isJoined()){
+                                    if(!getStaffName().equals("") && !getAppointedBy().equals("") && !getQualification().equals("") && !getJoiningDate().equals("")){
+                                        PartTimeStaffHire partTimeStaffHire = (PartTimeStaffHire) staffHire;
+                                        partTimeStaffHire.hirePartTimeStaff(getStaffName(), getJoiningDate(), getQualification(), getAppointedBy());
+                                        System.out.println("Part time staff Appointed successfully");
+                                    }else {
+                                        JOptionPane.showMessageDialog(frame,"please fill the fields.");
+                                    }
+                                }else{
+                                    JOptionPane.showMessageDialog(frame,"Already joined!!");
+
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(frame,"please enter vacancy number");
+
+                }
+            }
             System.out.println("Appoint");
         }else if(en.getSource() == Terminate){
-            System.out.println("Terminated");
+            if (checkBoxPartTime.isSelected()){
+                if (!VaccancyNumberf.getText().equals("")){
+                    for (StaffHire staffHire :staffHires){
+                        if (getVacancyNumber() == staffHire.getVacancyNumber()){
+                            if (staffHires.get(getVacancyNumber()) instanceof PartTimeStaffHire){
+                                if(!((PartTimeStaffHire) staffHire).isTerminated()){
+                                    PartTimeStaffHire partTimeStaffHire = (PartTimeStaffHire) staffHire;
+                                    partTimeStaffHire.terminateStaff();
+                                    break;
+                                }else{
+                                    JOptionPane.showMessageDialog(frame, "Staff already terminated.");
+                                }
+                                break;
+                            }else{
+                                JOptionPane.showMessageDialog(frame, "You entered vacancy number of full time, Please try another");
+                            }
+                            break;
+                        }else {
+                            JOptionPane.showMessageDialog(frame, "There is no vacancy number associated.");
+                        }
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(frame, "Please enter vacancy number");
+                }
+            } else if(checkBoxFulTime.isSelected()){
+                JOptionPane.showMessageDialog(frame, "You cant Terminate full time staff");
+            } else{
+                JOptionPane.showMessageDialog(frame, "Please select job type.");
+            }
         }else if (en.getSource()==Display){
             StringBuilder builder = new StringBuilder();
             if(getJobType().equals("Full Time")){
@@ -414,11 +488,6 @@ public class INGNepal implements ActionListener {
                     if (staffHire instanceof FullTimeStaffHire){
                         FullTimeStaffHire fullTimeStaffHire = (FullTimeStaffHire) staffHire;
                         fullTimeStaffHire.display();
-//                        builder.append("Vacancy Number");
-//                        builder.append(" | ");
-//                        builder.append("Designation");
-//                        builder.append(" | ");
-//                        builder.append("Job Type\n");
 
                         builder.append(staffHire.getVacancyNumber());
                         builder.append(" | ");
@@ -436,11 +505,36 @@ public class INGNepal implements ActionListener {
                             builder.append(((FullTimeStaffHire) staffHire).getJoiningDate());
                             builder.append(" | ");
                         }
+                        builder.append("\n");
                     }
                 }
                 area.setText(String.valueOf(builder));
             }else  if (getJobType().equals("Part Time")){
+                for(StaffHire staffHire : staffHires){
+                    if (staffHire instanceof PartTimeStaffHire){
+                        PartTimeStaffHire partTimeStaffHire = (PartTimeStaffHire) staffHire;
+                        partTimeStaffHire.display();
 
+                        builder.append(staffHire.getVacancyNumber());
+                        builder.append(" | ");
+                        builder.append(staffHire.getDesignation());
+                        builder.append(" | ");
+                        builder.append(staffHire.getJobType());
+                        builder.append(" | ");
+                        if(partTimeStaffHire.isJoined()){
+                            builder.append(((PartTimeStaffHire) staffHire).getQualification());
+                            builder.append(" | ");
+                            builder.append(((PartTimeStaffHire) staffHire).getStaffName());
+                            builder.append(" | ");
+                            builder.append(((PartTimeStaffHire) staffHire).getAppointedBy());
+                            builder.append(" | ");
+                            builder.append(((PartTimeStaffHire) staffHire).getJoiningDate());
+                            builder.append(" | ");
+                        }
+                        builder.append("\n");
+                    }
+                }
+                area.setText(String.valueOf(builder));
             }else {
                 JOptionPane.showMessageDialog(frame, "Please Select job type.");
             }
@@ -521,23 +615,23 @@ public class INGNepal implements ActionListener {
 //                    if(!partTimeStaffHire.getAppointedBy().isEmpty()){
 //                        builder.append(",");
 //                    }
-//
+//    }
+////
+//////                    if(!PartTimeStaffHire.getShifts().isEmpty()){
+//////                        builder.append(",");
+//////                    }
+////
+////
+////
+////
+////                }
+////
+////
+////            }
 //                    builder.append(partTimeStaffHire.getDesignation());
 //                    if(!partTimeStaffHire.getDesignation().isEmpty()){
 //                        builder.append(",");
-//                    }
 //
-////                    if(!PartTimeStaffHire.getShifts().isEmpty()){
-////                        builder.append(",");
-////                    }
-//
-//
-//
-//
-//                }
-//
-//
-//            }
 
         }
         else if (en.getSource()==Clear){
